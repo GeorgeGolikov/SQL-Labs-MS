@@ -88,11 +88,11 @@ SELECT DISTINCT FIO, Ball, DateEx, IdDisc FROM Balls
 RIGHT JOIN Students ON Balls.NumSt = Students.NumSt
 
 --3.10 Придумайте запрос с группировкой и соединением нескольких таблиц
--- вывести студентов, которые сдали все экзамены за все семестры
-SELECT NumSt, NumDir, COUNT(Ball) AS Number_of_exams
+-- вывести студентов, которые сдали все экзамены за все семестры(c учетом того, что могли быть пересдачи)
+SELECT NumSt, NumDir, COUNT(DISTINCT Balls.IdDisc) AS Number_of_exams
 	FROM Balls JOIN Uplans ON Balls.IdDisc=Uplans.IdDisc
 	GROUP BY NumSt, NumDir
-		HAVING COUNT(Ball)=(SELECT COUNT(*) FROM Uplans u WHERE
+		HAVING COUNT(DISTINCT Balls.IdDisc)=(SELECT COUNT(*) FROM Uplans u WHERE
 		Uplans.NumDir=u.NumDir);
 
 
