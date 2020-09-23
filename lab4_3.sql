@@ -107,7 +107,7 @@ SELECT NumSt, NumDir, COUNT(Ball) AS Number_of_exams
 SELECT NumSt, Fio, Groups.NumGroup
 	FROM Students JOIN Groups ON Groups.NumGroup=Students.NumGroup
 	WHERE NOT EXISTS (SELECT * FROM Uplans WHERE Semestr=1 AND Groups.NumDir=Uplans.NumDir
-															AND NOT EXISTS (SELECT * FROM Balls WHERE Balls.IdDisc=Uplans.IdDisc AND Students.NumSt=Balls.NumSt));
+	AND NOT EXISTS (SELECT * FROM Balls WHERE Balls.IdDisc=Uplans.IdDisc AND 	Students.NumSt=Balls.NumSt));
 
 
 
