@@ -24,10 +24,10 @@ SELECT DISTINCT NumDir FROM Uplans;
 SELECT DISTINCT Semestr FROM Uplans;
 
 --3.7 Выберите всех студентов группы 13504/1
-SELECT Fio FROM Students WHERE NumGroup = 1;
+SELECT Fio FROM Students WHERE NumGroup = '13504/1';
 
 --3.8 Выберите дисциплины первого семестра для направления 230100
-SELECT * FROM Uplans WHERE Semestr = 1 AND NumDir = 23001;
+SELECT * FROM Uplans WHERE Semestr = 1 AND NumDir = 230100;
 
 --3.9 Выведите номера групп с указанием количества студентов в каждой группе
 SELECT NumGroup, COUNT(Fio) FROM Students GROUP BY NumGroup;
