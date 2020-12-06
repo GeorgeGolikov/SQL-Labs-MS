@@ -106,3 +106,52 @@ SELECT
 FROM Groups, Students
 WHERE Groups.GroupID = Students.GroupID
 GROUP BY(Naming)
+
+-- 11 UNION
+-- Вывести группы, для которых математика или физика встречается в расписании больше 1 раза
+SELECT Groups.Naming FROM Groups
+	JOIN Schedule ON Groups.GroupID = Schedule.GroupID
+		JOIN Disciplines ON Schedule.DisciplineID = Disciplines.DisciplineID
+			WHERE Disciplines.Naming = 'Математика'
+			GROUP BY(Groups.Naming)
+				HAVING COUNT(Disciplines.Naming) > 1
+UNION
+SELECT Groups.Naming FROM Groups
+	JOIN Schedule ON Groups.GroupID = Schedule.GroupID
+		JOIN Disciplines ON Schedule.DisciplineID = Disciplines.DisciplineID
+			WHERE Disciplines.Naming = 'Физика'
+			GROUP BY(Groups.Naming)
+				HAVING COUNT(Disciplines.Naming) > 1
+
+-- 12 IN
+-- Выберите все заявки методистов декану, методисты которых - мужчины
+SELECT * 
+FROM RequestsScholarshipM
+WHERE MethodistID IN (
+	SELECT MethodistID
+	FROM Methodists
+	JOIN Sex ON Methodists.SexID = Sex.SexID
+	WHERE Sex.Naming = 'мужской'
+)
+
+-- 13 LEFT JOIN
+-- Выберите всех студентов и соотв им приказы на стипендию, если они есть
+SELECT *
+FROM Students
+LEFT JOIN ScholarshipOrders ON Students.ScholarshipOrderID = ScholarshipOrders.ScholOrderID
+
+-- 14 EXCEPT
+-- Выберите судентов и их оценки "3", кроме тех, которые получены по математике
+SELECT FIO, Birthday, Groups.Naming AS GroupNum, Disciplines.Naming AS SubjectN, Valuee AS Grade
+FROM Students
+JOIN Groups ON Students.GroupID = Groups.GroupID
+JOIN Grades ON Students.StudentID = Grades.StudentID
+JOIN Disciplines ON Grades.DisciplineID = Disciplines.DisciplineID
+WHERE Grades.Valuee = 3
+EXCEPT
+SELECT FIO, Birthday, Groups.Naming AS GroupNum, Disciplines.Naming AS SubjectN, Valuee AS Grade
+FROM Students
+JOIN Groups ON Students.GroupID = Groups.GroupID
+JOIN Grades ON Students.StudentID = Grades.StudentID
+JOIN Disciplines ON Grades.DisciplineID = Disciplines.DisciplineID
+WHERE Disciplines.Naming = 'Математика'
