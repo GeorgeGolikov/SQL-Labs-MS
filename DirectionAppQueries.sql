@@ -1,17 +1,20 @@
 USE Direction;
 
---список студентов
-select * from Students;
-
 --оценки
 select * from Grades;
 
+--список студентов
+-- ROLES: методисты, декан, студенты
+select * from Students;
+
 --средний балл студента
-select avg(Valuee) from Grades where StudentID=1
+-- ROLES: методисты, декан, студенты
+select avg(Valuee) as AverageGrade from Grades where StudentID=1
 
 
 -- 1
 -- ¬ыберите группы, в которых есть студенты, получающие повышенную стипендию
+-- ROLES: методисты, декан
 SELECT DISTINCT Groups.Naming FROM
 	Groups
 		JOIN Students ON Students.GroupID = Groups.GroupID
@@ -20,6 +23,7 @@ SELECT DISTINCT Groups.Naming FROM
 
 -- 2
 -- ¬ыберите методистов, которые не выполнили ни одного задани€ декана
+-- ROLES: декан
 SELECT * FROM Methodists WHERE NOT EXISTS (
 	SELECT * FROM DirectorInstructions
 		JOIN Statuses ON DirectorInstructions.StatusID = Statuses.StatusID
@@ -28,6 +32,7 @@ SELECT * FROM Methodists WHERE NOT EXISTS (
 
 -- 3
 -- ¬ыберите группы, в которых есть только отличники или хорошисты
+-- ROLES: методисты, декан
 SELECT * FROM Groups WHERE EXISTS (
 	SELECT * FROM Students
 		JOIN Grades ON Students.StudentID = Grades.StudentID 
@@ -42,6 +47,7 @@ SELECT * FROM Groups WHERE NOT EXISTS (
 
 -- 4
 -- ¬ывести студентов, запросы на стипендию которых были отклонены
+-- ROLES: декан
 SELECT FIO FROM Students 
 	JOIN RequestsScholarship ON Students.StudentID = RequestsScholarship.StudentID
 		JOIN Statuses ON RequestsScholarship.StatusID = Statuses.StatusID
@@ -49,6 +55,7 @@ SELECT FIO FROM Students
 
 -- 5
 -- ¬ыберите методиста, который выполнил больше всех заданий декана
+-- ROLES: декан
 SELECT FIO FROM Methodists JOIN DirectorInstructions ON Methodists.MethodistID = DirectorInstructions.MethodistID
 GROUP BY Methodists.FIO
 	HAVING COUNT(DirectorInstructions.MethodistID) = (
@@ -62,6 +69,7 @@ GROUP BY Methodists.FIO
 
 -- 6
 -- ¬ каких группах есть студенты, которые хот€т перейти в другую группу
+-- ROLES: методисты, декан
 SELECT * FROM Groups WHERE EXISTS (
 	SELECT * FROM Students, RequestsGroupChange
 		WHERE Students.StudentID = RequestsGroupChange.StudentID
@@ -70,6 +78,7 @@ SELECT * FROM Groups WHERE EXISTS (
 
 -- 7
 -- ¬ыберите группы, в расписании которых больше 2 свободных дней
+-- ROLES: методисты, декан
 SELECT DISTINCT Groups.Naming FROM Groups
 	JOIN Schedule ON Groups.GroupID = Schedule.GroupID
 		GROUP BY(Groups.Naming)
@@ -77,6 +86,7 @@ SELECT DISTINCT Groups.Naming FROM Groups
 
 -- 8
 -- ¬ какой группе наибольше количество студентов, желающих отчислитьс€
+-- ROLES: методисты, декан
 SELECT Groups.Naming FROM Groups
 	JOIN Students ON Students.GroupID = Groups.GroupID
 		JOIN RequestsDropOut ON RequestsDropOut.StudentID = Students.StudentID
@@ -91,6 +101,7 @@ GROUP BY Groups.Naming
 
 -- 9
 -- ѕолучить последние по дате за€вки на стипендию дл€ студентов, их подававших
+-- ROLES: декан
 SELECT * FROM RequestsScholarship
 	JOIN Students ON Students.StudentID = RequestsScholarship.StudentID
 		WHERE  RequestsScholarship.DateIssued = (
@@ -99,6 +110,7 @@ SELECT * FROM RequestsScholarship
 
 -- 10
 -- ƒл€ каждой группы вывести количество мальчиков и количество девочек в группе
+-- ROLES: методисты, декан, студенты
 SELECT
 	Naming,
 	SUM(case when Students.SexID=1 then 1 else 0 end) AS Boys,
@@ -109,6 +121,7 @@ GROUP BY(Naming)
 
 -- 11 UNION
 -- ¬ывести группы, дл€ которых математика или физика встречаетс€ в расписании больше 1 раза
+-- ROLES: методисты, декан, студенты
 SELECT Groups.Naming FROM Groups
 	JOIN Schedule ON Groups.GroupID = Schedule.GroupID
 		JOIN Disciplines ON Schedule.DisciplineID = Disciplines.DisciplineID
@@ -125,6 +138,7 @@ SELECT Groups.Naming FROM Groups
 
 -- 12 IN
 -- ¬ыберите все за€вки методистов декану, методисты которых - мужчины
+-- ROLES: декан
 SELECT * 
 FROM RequestsScholarshipM
 WHERE MethodistID IN (
@@ -136,12 +150,14 @@ WHERE MethodistID IN (
 
 -- 13 LEFT JOIN
 -- ¬ыберите всех студентов и соотв им приказы на стипендию, если они есть
+-- ROLES: методисты, декан
 SELECT *
 FROM Students
 LEFT JOIN ScholarshipOrders ON Students.ScholarshipOrderID = ScholarshipOrders.ScholOrderID
 
 -- 14 EXCEPT
--- ¬ыберите судентов и их оценки "3", кроме тех, которые получены по математике
+-- ¬ыберите студентов и их оценки "3", кроме тех, которые получены по математике
+-- ROLES: методисты, декан
 SELECT FIO, Birthday, Groups.Naming AS GroupNum, Disciplines.Naming AS SubjectN, Valuee AS Grade
 FROM Students
 JOIN Groups ON Students.GroupID = Groups.GroupID
