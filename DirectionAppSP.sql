@@ -1,6 +1,6 @@
-USE Direction;
+п»їUSE Direction;
 
--- вывести стипендию студента по его ID
+-- РІС‹РІРµСЃС‚Рё СЃС‚РёРїРµРЅРґРёСЋ СЃС‚СѓРґРµРЅС‚Р° РїРѕ РµРіРѕ ID
 SELECT Naming, Summ, DateStarted, OrderName, ScholOrderID FROM
 	ScholarshipOrders
 	JOIN Students
@@ -8,12 +8,12 @@ SELECT Naming, Summ, DateStarted, OrderName, ScholOrderID FROM
 WHERE 
 	StudentID = 1
 
--- список группы по её номеру
+-- СЃРїРёСЃРѕРє РіСЂСѓРїРїС‹ РїРѕ РµС‘ РЅРѕРјРµСЂСѓ
 SELECT * FROM Students WHERE GroupID = 1;
 
--- расписание группы
-SELECT DayNaming AS День, Disciplines.Naming AS Предмет, TimeLine AS Время,
-	   Room AS Ауд, ClassesTypes.Naming AS Тип FROM
+-- СЂР°СЃРїРёСЃР°РЅРёРµ РіСЂСѓРїРїС‹
+SELECT DayNaming AS Р”РµРЅСЊ, Disciplines.Naming AS РџСЂРµРґРјРµС‚, TimeLine AS Р’СЂРµРјСЏ,
+	   Room AS РђСѓРґ, ClassesTypes.Naming AS РўРёРї FROM
 	Schedule
 	JOIN Dayss ON Schedule.DayOfWeekID = Dayss.DayID
 	JOIN Disciplines ON Schedule.DisciplineID = Disciplines.DisciplineID
@@ -21,13 +21,13 @@ SELECT DayNaming AS День, Disciplines.Naming AS Предмет, TimeLine AS Время,
 WHERE
 	Schedule.GroupID = 1
 	
--- оценки определенного студента по его ID
-SELECT Naming AS Предмет, Valuee AS Оценка FROM
+-- РѕС†РµРЅРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ СЃС‚СѓРґРµРЅС‚Р° РїРѕ РµРіРѕ ID
+SELECT Naming AS РџСЂРµРґРјРµС‚, Valuee AS РћС†РµРЅРєР° FROM
 	Grades
 	JOIN Disciplines ON Grades.GradeID = Disciplines.DisciplineID
 WHERE Grades.StudentID = 1
 
--- для конкретной группы кол-во мальчиков и девочек
+-- РґР»СЏ РєРѕРЅРєСЂРµС‚РЅРѕР№ РіСЂСѓРїРїС‹ РєРѕР»-РІРѕ РјР°Р»СЊС‡РёРєРѕРІ Рё РґРµРІРѕС‡РµРє
 SELECT
 	Naming,
 	SUM(case when Students.SexID=1 then 1 else 0 end) AS Boys,
@@ -36,35 +36,35 @@ FROM Groups, Students
 WHERE Groups.GroupID = Students.GroupID AND Students.GroupID = 1
 GROUP BY(Naming)
 
--- для конкретного студента вывести список его заявок на стипендию
+-- РґР»СЏ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ СЃС‚СѓРґРµРЅС‚Р° РІС‹РІРµСЃС‚Рё СЃРїРёСЃРѕРє РµРіРѕ Р·Р°СЏРІРѕРє РЅР° СЃС‚РёРїРµРЅРґРёСЋ
 SELECT
-	Summ AS Сумма, Cause AS Причина, DateIssued AS Дата_заявлено,
-	DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+	Summ AS РЎСѓРјРјР°, Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+	DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 FROM
 	RequestsScholarship
 	JOIN Statuses ON RequestsScholarship.StatusID = Statuses.StatusID
 	WHERE StudentID = 1;
 
--- заявки на смену группы для студента
+-- Р·Р°СЏРІРєРё РЅР° СЃРјРµРЅСѓ РіСЂСѓРїРїС‹ РґР»СЏ СЃС‚СѓРґРµРЅС‚Р°
 SELECT
-	Groups.Naming AS Группа, Cause AS Причина, DateIssued AS Дата_заявлено,
-	DateAcceptedOrRejected AS Дата_результат, Statuses.Naming AS Статус
+	Groups.Naming AS Р“СЂСѓРїРїР°, Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+	DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Statuses.Naming AS РЎС‚Р°С‚СѓСЃ
 FROM
 	RequestsGroupChange
 	JOIN Groups ON RequestsGroupChange.OldGroupID = Groups.GroupID
 	JOIN Statuses ON RequestsGroupChange.StatusID = Statuses.StatusID
 	WHERE RequestsGroupChange.StudentID = 1;
 
--- заявки на отчисление для студента
+-- Р·Р°СЏРІРєРё РЅР° РѕС‚С‡РёСЃР»РµРЅРёРµ РґР»СЏ СЃС‚СѓРґРµРЅС‚Р°
 SELECT
-	Cause AS Причина, DateIssued AS Дата_заявлено,
-	DateAcceptedOrRejected AS Дата_результат, Statuses.Naming AS Статус
+	Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+	DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Statuses.Naming AS РЎС‚Р°С‚СѓСЃ
 FROM
 	RequestsDropOut
 	JOIN Statuses ON RequestsDropOut.StatusID = Statuses.StatusID
 	WHERE RequestsDropOut.StudentID = 1;
 
--- задания декана
+-- Р·Р°РґР°РЅРёСЏ РґРµРєР°РЅР°
 SELECT
 	MethodistID, FIO, Summ, Cause, DateIssued, DateCompleted, Naming
 FROM
@@ -73,8 +73,8 @@ FROM
 	JOIN Statuses ON DirectorInstructions.StatusID = Statuses.StatusID
 
 
--- ТРИГГЕР
--- 1) При вставке заявки, устанавливать ей статус "В процессе"
+-- РўР РР“Р“Р•Р 
+-- 1) РџСЂРё РІСЃС‚Р°РІРєРµ Р·Р°СЏРІРєРё, СѓСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ РµР№ СЃС‚Р°С‚СѓСЃ "Р’ РїСЂРѕС†РµСЃСЃРµ"
 GO
 CREATE TRIGGER setReqInProcess
 ON RequestsScholarship
@@ -108,8 +108,8 @@ WHERE RequestID = (SELECT RequestID FROM inserted)
 GO
 ENABLE TRIGGER setReqDropInProcess ON RequestsDropOut
 
--- ХРАНИМЫЕ ПРОЦЕДУРЫ
--- 1) Отправить заявку на стипендию от студента и отобразить в таблице заявок
+-- РҐР РђРќРРњР«Р• РџР РћР¦Р•Р”РЈР Р«
+-- 1) РћС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ РЅР° СЃС‚РёРїРµРЅРґРёСЋ РѕС‚ СЃС‚СѓРґРµРЅС‚Р° Рё РѕС‚РѕР±СЂР°Р·РёС‚СЊ РІ С‚Р°Р±Р»РёС†Рµ Р·Р°СЏРІРѕРє
 GO
 CREATE PROCEDURE sp_loadReqFromStudent
 	@StudentID AS INT,
@@ -121,8 +121,8 @@ AS
 	VALUES(@StudentID, @Sum, @Cause, @DateIssued)
 	
 	SELECT
-		Summ AS Сумма, Cause AS Причина, DateIssued AS Дата_заявлено,
-		DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+		Summ AS РЎСѓРјРјР°, Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+		DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	FROM
 		RequestsScholarship
 		JOIN Statuses ON RequestsScholarship.StatusID = Statuses.StatusID
@@ -133,13 +133,13 @@ GO
 DECLARE @StudentID int, @Sum int, @Cause VARCHAR(100), @DateIssued DATE;
 SET @StudentID=2;
 SET @Sum = 2000;
-SET @Cause='Учеба';
+SET @Cause='РЈС‡РµР±Р°';
 SET @DateIssued = '2020-12-12';
 EXEC sp_loadReqFromStudent @StudentID, @Sum, @Cause, @DateIssued; 
 
 DROP PROCEDURE sp_loadReqFromStudent;
 	
--- 2) Отправить заявку на смену группы от студента и отобразить в таблице заявок
+-- 2) РћС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ РЅР° СЃРјРµРЅСѓ РіСЂСѓРїРїС‹ РѕС‚ СЃС‚СѓРґРµРЅС‚Р° Рё РѕС‚РѕР±СЂР°Р·РёС‚СЊ РІ С‚Р°Р±Р»РёС†Рµ Р·Р°СЏРІРѕРє
 GO
 CREATE PROCEDURE sp_loadReqCGFromStudent
 	@StudentID AS INT,
@@ -152,8 +152,8 @@ AS
 	VALUES(@StudentID, @OldGroupID, @NewGroupID, @Cause, @DateIssued)
 	
 	SELECT 
-		Groups.Naming AS Группа, Cause AS Причина, DateIssued AS Дата_заявлено,
-        DateAcceptedOrRejected AS Дата_результат, Statuses.Naming AS Статус
+		Groups.Naming AS Р“СЂСѓРїРїР°, Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+        DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Statuses.Naming AS РЎС‚Р°С‚СѓСЃ
     FROM
 		RequestsGroupChange
 		JOIN Groups ON RequestsGroupChange.OldGroupID = Groups.GroupID
@@ -162,7 +162,7 @@ AS
 		RequestsGroupChange.StudentID = @StudentID
 GO
 
--- 3) Отправить заявку на отчисление от студента и отобразить в таблице заявок
+-- 3) РћС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ РЅР° РѕС‚С‡РёСЃР»РµРЅРёРµ РѕС‚ СЃС‚СѓРґРµРЅС‚Р° Рё РѕС‚РѕР±СЂР°Р·РёС‚СЊ РІ С‚Р°Р±Р»РёС†Рµ Р·Р°СЏРІРѕРє
 GO
 CREATE PROCEDURE sp_loadReqDropFromStudent
 	@StudentID AS INT,
@@ -173,15 +173,15 @@ AS
 	VALUES(@StudentID, @Cause, @DateIssued)
 	
 	SELECT
-		Cause AS Причина, DateIssued AS Дата_заявлено,
-		DateAcceptedOrRejected AS Дата_результат, Statuses.Naming AS Статус
+		Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+		DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Statuses.Naming AS РЎС‚Р°С‚СѓСЃ
 	FROM
 		RequestsDropOut
 		JOIN Statuses ON RequestsDropOut.StatusID = Statuses.StatusID
 	WHERE RequestsDropOut.StudentID = @StudentID;
 GO
 
--- 4) Отправить заявку на стипендию от методиста и отобразить в таблице заявок
+-- 4) РћС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ РЅР° СЃС‚РёРїРµРЅРґРёСЋ РѕС‚ РјРµС‚РѕРґРёСЃС‚Р° Рё РѕС‚РѕР±СЂР°Р·РёС‚СЊ РІ С‚Р°Р±Р»РёС†Рµ Р·Р°СЏРІРѕРє
 GO
 CREATE PROCEDURE sp_loadReqFromMeth
 	@MethodistID AS INT,
@@ -194,8 +194,8 @@ AS
 	VALUES(@MethodistID, @StudentID, @Sum, @Cause, @DateIssued, 1)
 	
 	SELECT
-		FIO, Summ AS Сумма, Cause AS Причина, DateIssued AS Дата_заявлено,
-		DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+		FIO, Summ AS РЎСѓРјРјР°, Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+		DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	FROM
 		RequestsScholarshipM
 		JOIN Statuses ON RequestsScholarshipM.StatusID = Statuses.StatusID
@@ -204,23 +204,23 @@ AS
 		MethodistID = @MethodistID
 GO
 
--- 10) Методисты разных типов
+-- 10) РњРµС‚РѕРґРёСЃС‚С‹ СЂР°Р·РЅС‹С… С‚РёРїРѕРІ
 GO
 CREATE PROCEDURE sp_loadMethodists
 	@Type AS VARCHAR(100)
 AS
-	IF		@Type = 'Все'
+	IF		@Type = 'Р’СЃРµ'
 
        SELECT
-			FIO AS ФИО, Birthday AS Дата_рожд, Sex.Naming AS Пол, Salary AS ЗП
+			FIO AS Р¤РРћ, Birthday AS Р”Р°С‚Р°_СЂРѕР¶Рґ, Sex.Naming AS РџРѕР», Salary AS Р—Рџ
 	   FROM
 			Methodists
 			JOIN Sex ON Methodists.SexID = Sex.SexID
 
-	ELSE IF @Type = 'Выполнивший больше всех заданий'
+	ELSE IF @Type = 'Р’С‹РїРѕР»РЅРёРІС€РёР№ Р±РѕР»СЊС€Рµ РІСЃРµС… Р·Р°РґР°РЅРёР№'
 
        SELECT
-			FIO AS ФИО, Birthday AS Дата_рожд, Sex.Naming AS Пол, Salary AS ЗП
+			FIO AS Р¤РРћ, Birthday AS Р”Р°С‚Р°_СЂРѕР¶Рґ, Sex.Naming AS РџРѕР», Salary AS Р—Рџ
 	   FROM
 			Methodists
 			JOIN Sex ON Methodists.SexID = Sex.SexID
@@ -230,26 +230,26 @@ GROUP BY Methodists.FIO, Birthday, Sex.Naming, Salary
 		SELECT MAX(number) FROM (SELECT COUNT(DirectorInstructions.MethodistID) AS number, Methodists.FIO FROM Methodists
 								 JOIN DirectorInstructions ON Methodists.MethodistID = DirectorInstructions.MethodistID
 								 JOIN Statuses ON DirectorInstructions.StatusID = Statuses.StatusID
-								 WHERE Statuses.Naming = 'Выполнен'
+								 WHERE Statuses.Naming = 'Р’С‹РїРѕР»РЅРµРЅ'
 								 GROUP BY Methodists.FIO)
 								 AS A
 	);
 
-	ELSE IF @Type = 'Не выполнившие ни одного задания'
+	ELSE IF @Type = 'РќРµ РІС‹РїРѕР»РЅРёРІС€РёРµ РЅРё РѕРґРЅРѕРіРѕ Р·Р°РґР°РЅРёСЏ'
 
 		SELECT
-			FIO AS ФИО, Birthday AS Дата_рожд, Sex.Naming AS Пол, Salary AS ЗП
+			FIO AS Р¤РРћ, Birthday AS Р”Р°С‚Р°_СЂРѕР¶Рґ, Sex.Naming AS РџРѕР», Salary AS Р—Рџ
 		FROM
 			Methodists
 			JOIN Sex ON Methodists.SexID = Sex.SexID
 		WHERE NOT EXISTS (
 			SELECT * FROM DirectorInstructions
 			JOIN Statuses ON DirectorInstructions.StatusID = Statuses.StatusID
-			WHERE Methodists.MethodistID = DirectorInstructions.MethodistID AND Statuses.Naming = 'Выполнен'
+			WHERE Methodists.MethodistID = DirectorInstructions.MethodistID AND Statuses.Naming = 'Р’С‹РїРѕР»РЅРµРЅ'
 		)
 GO
 
--- 11) заявки декану разных типов с изменением
+-- 11) Р·Р°СЏРІРєРё РґРµРєР°РЅСѓ СЂР°Р·РЅС‹С… С‚РёРїРѕРІ СЃ РёР·РјРµРЅРµРЅРёРµРј
 GO
 CREATE PROCEDURE sp_loadReqDirectorWithChange
 	@Type AS VARCHAR(100),
@@ -257,7 +257,7 @@ CREATE PROCEDURE sp_loadReqDirectorWithChange
 	@StatusID INT,
 	@DateAcRej date
 AS
-	IF		@Type = 'Студент-стипендия'
+	IF		@Type = 'РЎС‚СѓРґРµРЅС‚-СЃС‚РёРїРµРЅРґРёСЏ'
 	BEGIN
 	   UPDATE RequestsScholarship
 			SET
@@ -266,15 +266,15 @@ AS
 	   WHERE RequestID = @RequestID
 
        SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	   FROM
 			RequestsScholarship
 			JOIN Students ON RequestsScholarship.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsScholarship.StatusID = Statuses.StatusID
 	END
-	ELSE IF @Type = 'Студент-стипендия-последние'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-СЃС‚РёРїРµРЅРґРёСЏ-РїРѕСЃР»РµРґРЅРёРµ'
 	BEGIN
 	   UPDATE RequestsScholarship
 			SET
@@ -283,9 +283,9 @@ AS
 	   WHERE RequestID = @RequestID
 
        SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	   FROM
 			RequestsScholarship
 			JOIN Students ON Students.StudentID = RequestsScholarship.StudentID
@@ -300,7 +300,7 @@ AS
 					Students.StudentID = RequestsScholarship.StudentID
 			);
 	END
-	ELSE IF @Type = 'Студент-стипендия-отклонён'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-СЃС‚РёРїРµРЅРґРёСЏ-РѕС‚РєР»РѕРЅС‘РЅ'
 	BEGIN
 		UPDATE RequestsScholarship
 			SET
@@ -309,17 +309,17 @@ AS
 	    WHERE RequestID = @RequestID
 
 		SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsScholarship 
 			JOIN Students ON Students.StudentID = RequestsScholarship.StudentID
 			JOIN Statuses ON RequestsScholarship.StatusID = Statuses.StatusID
 		WHERE
-			Statuses.Naming = 'Отклонён';
+			Statuses.Naming = 'РћС‚РєР»РѕРЅС‘РЅ';
 	END
-	ELSE IF @Type = 'Студент-смена группы'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-СЃРјРµРЅР° РіСЂСѓРїРїС‹'
 	BEGIN
 		UPDATE RequestsGroupChange
 			SET
@@ -328,16 +328,16 @@ AS
 	    WHERE RequestID = @RequestID
 
 		SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Groups.Naming AS Желаемая_гр,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Statuses.Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Groups.Naming AS Р–РµР»Р°РµРјР°СЏ_РіСЂ,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Statuses.Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsGroupChange
 			JOIN Groups ON RequestsGroupChange.NewGroupID = Groups.GroupID
 			JOIN Students ON RequestsGroupChange.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsGroupChange.StatusID = Statuses.StatusID;
 	END
-	ELSE IF @Type = 'Студент-отчисление'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-РѕС‚С‡РёСЃР»РµРЅРёРµ'
 	BEGIN
 		UPDATE RequestsDropOut
 			SET
@@ -346,15 +346,15 @@ AS
 	    WHERE RequestID = @RequestID
 
 		SELECT
-			RequestID AS ID_заявки, FIO AS Студент,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsDropOut
 			JOIN Students ON RequestsDropOut.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsDropOut.StatusID = Statuses.StatusID;
 	END
-	ELSE IF @Type = 'Методист-стипендия'
+	ELSE IF @Type = 'РњРµС‚РѕРґРёСЃС‚-СЃС‚РёРїРµРЅРґРёСЏ'
 	BEGIN
 		UPDATE RequestsScholarshipM
 			SET
@@ -363,17 +363,17 @@ AS
 	    WHERE RequestID = @RequestID
 
 		SELECT
-			RequestID AS ID_заявки, Students.FIO AS Студент,
-			Methodists.FIO AS Методист, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, Students.FIO AS РЎС‚СѓРґРµРЅС‚,
+			Methodists.FIO AS РњРµС‚РѕРґРёСЃС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	   FROM
 			RequestsScholarshipM
 			JOIN Methodists ON RequestsScholarshipM.MethodistID = Methodists.MethodistID
 			JOIN Students ON RequestsScholarshipM.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsScholarshipM.StatusID = Statuses.StatusID;
 	END
-	ELSE IF @Type = 'Методист-стипендия-мужчина'
+	ELSE IF @Type = 'РњРµС‚РѕРґРёСЃС‚-СЃС‚РёРїРµРЅРґРёСЏ-РјСѓР¶С‡РёРЅР°'
 	BEGIN
 		UPDATE RequestsScholarshipM
 			SET
@@ -382,10 +382,10 @@ AS
 	    WHERE RequestID = @RequestID
 		
 		SELECT
-			RequestID AS ID_заявки, Students.FIO AS Студент,
-			Methodists.FIO AS Методист, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, Students.FIO AS РЎС‚СѓРґРµРЅС‚,
+			Methodists.FIO AS РњРµС‚РѕРґРёСЃС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsScholarshipM
 			JOIN Methodists ON RequestsScholarshipM.MethodistID = Methodists.MethodistID
@@ -398,33 +398,33 @@ AS
 					Methodists
 					JOIN Sex ON Methodists.SexID = Sex.SexID
 				WHERE
-					Sex.Naming = 'мужской'
+					Sex.Naming = 'РјСѓР¶СЃРєРѕР№'
 			)
 	END
 GO
 
--- 11) заявки декану разных типов
+-- 11) Р·Р°СЏРІРєРё РґРµРєР°РЅСѓ СЂР°Р·РЅС‹С… С‚РёРїРѕРІ
 GO
 CREATE PROCEDURE sp_loadReqDirector
 	@Type AS VARCHAR(100)
 AS
-	IF		@Type = 'Студент-стипендия'
+	IF		@Type = 'РЎС‚СѓРґРµРЅС‚-СЃС‚РёРїРµРЅРґРёСЏ'
 
        SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	   FROM
 			RequestsScholarship
 			JOIN Students ON RequestsScholarship.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsScholarship.StatusID = Statuses.StatusID;
 
-	ELSE IF @Type = 'Студент-стипендия-последние'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-СЃС‚РёРїРµРЅРґРёСЏ-РїРѕСЃР»РµРґРЅРёРµ'
 
        SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	   FROM
 			RequestsScholarship
 			JOIN Students ON Students.StudentID = RequestsScholarship.StudentID
@@ -439,62 +439,62 @@ AS
 					Students.StudentID = RequestsScholarship.StudentID
 			);
 
-	ELSE IF @Type = 'Студент-стипендия-отклонён'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-СЃС‚РёРїРµРЅРґРёСЏ-РѕС‚РєР»РѕРЅС‘РЅ'
 
 		SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsScholarship 
 			JOIN Students ON Students.StudentID = RequestsScholarship.StudentID
 			JOIN Statuses ON RequestsScholarship.StatusID = Statuses.StatusID
 		WHERE
-			Statuses.Naming = 'Отклонён';
+			Statuses.Naming = 'РћС‚РєР»РѕРЅС‘РЅ';
 
-	ELSE IF @Type = 'Студент-смена группы'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-СЃРјРµРЅР° РіСЂСѓРїРїС‹'
 
 		SELECT
-			RequestID AS ID_заявки, FIO AS Студент, Groups.Naming AS Желаемая_гр,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Statuses.Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚, Groups.Naming AS Р–РµР»Р°РµРјР°СЏ_РіСЂ,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Statuses.Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsGroupChange
 			JOIN Groups ON RequestsGroupChange.NewGroupID = Groups.GroupID
 			JOIN Students ON RequestsGroupChange.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsGroupChange.StatusID = Statuses.StatusID;
 
-	ELSE IF @Type = 'Студент-отчисление'
+	ELSE IF @Type = 'РЎС‚СѓРґРµРЅС‚-РѕС‚С‡РёСЃР»РµРЅРёРµ'
 
 		SELECT
-			RequestID AS ID_заявки, FIO AS Студент,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, FIO AS РЎС‚СѓРґРµРЅС‚,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsDropOut
 			JOIN Students ON RequestsDropOut.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsDropOut.StatusID = Statuses.StatusID;
 
-	ELSE IF @Type = 'Методист-стипендия'
+	ELSE IF @Type = 'РњРµС‚РѕРґРёСЃС‚-СЃС‚РёРїРµРЅРґРёСЏ'
 
 		SELECT
-			RequestID AS ID_заявки, Students.FIO AS Студент,
-			Methodists.FIO AS Методист, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, Students.FIO AS РЎС‚СѓРґРµРЅС‚,
+			Methodists.FIO AS РњРµС‚РѕРґРёСЃС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 	   FROM
 			RequestsScholarshipM
 			JOIN Methodists ON RequestsScholarshipM.MethodistID = Methodists.MethodistID
 			JOIN Students ON RequestsScholarshipM.StudentID = Students.StudentID
 			JOIN Statuses ON RequestsScholarshipM.StatusID = Statuses.StatusID;
 
-	ELSE IF @Type = 'Методист-стипендия-мужчина'
+	ELSE IF @Type = 'РњРµС‚РѕРґРёСЃС‚-СЃС‚РёРїРµРЅРґРёСЏ-РјСѓР¶С‡РёРЅР°'
 		
 		SELECT
-			RequestID AS ID_заявки, Students.FIO AS Студент,
-			Methodists.FIO AS Методист, Summ AS Сумма,
-			Cause AS Причина, DateIssued AS Дата_заявлено,
-			DateAcceptedOrRejected AS Дата_результат, Naming AS Статус
+			RequestID AS ID_Р·Р°СЏРІРєРё, Students.FIO AS РЎС‚СѓРґРµРЅС‚,
+			Methodists.FIO AS РњРµС‚РѕРґРёСЃС‚, Summ AS РЎСѓРјРјР°,
+			Cause AS РџСЂРёС‡РёРЅР°, DateIssued AS Р”Р°С‚Р°_Р·Р°СЏРІР»РµРЅРѕ,
+			DateAcceptedOrRejected AS Р”Р°С‚Р°_СЂРµР·СѓР»СЊС‚Р°С‚, Naming AS РЎС‚Р°С‚СѓСЃ
 		FROM
 			RequestsScholarshipM
 			JOIN Methodists ON RequestsScholarshipM.MethodistID = Methodists.MethodistID
@@ -507,6 +507,6 @@ AS
 					Methodists
 					JOIN Sex ON Methodists.SexID = Sex.SexID
 				WHERE
-					Sex.Naming = 'мужской'
+					Sex.Naming = 'РјСѓР¶СЃРєРѕР№'
 			)
 GO

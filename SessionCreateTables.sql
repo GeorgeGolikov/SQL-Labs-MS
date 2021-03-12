@@ -1,4 +1,4 @@
-USE Session;
+﻿USE Session;
 
 CREATE TABLE Directions (
 	NumDir int PRIMARY KEY,

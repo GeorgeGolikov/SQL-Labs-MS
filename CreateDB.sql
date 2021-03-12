@@ -1,4 +1,4 @@
-USE Master
+﻿USE Master
 
 Go
 CREATE DATABASE Session ON (

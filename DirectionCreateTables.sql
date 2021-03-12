@@ -1,4 +1,4 @@
-USE Direction;
+﻿USE Direction;
 
 DROP TABLE IF EXISTS Sex
 CREATE TABLE Sex (

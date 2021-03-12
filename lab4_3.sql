@@ -1,65 +1,65 @@
-USE Session;
+п»їUSE Session;
 
---3.1 Выберите направления, в которых есть студенты, которые сдали экзамены (сдали хотя бы по одному экзамену)
+--3.1 Р’С‹Р±РµСЂРёС‚Рµ РЅР°РїСЂР°РІР»РµРЅРёСЏ, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё СЌРєР·Р°РјРµРЅС‹ (СЃРґР°Р»Рё С…РѕС‚СЏ Р±С‹ РїРѕ РѕРґРЅРѕРјСѓ СЌРєР·Р°РјРµРЅСѓ)
 SELECT DISTINCT Title FROM
 	Directions
 		JOIN Groups ON Directions.NumDir = Groups.NumDir
 			JOIN Students ON Groups.NumGroup = Students.NumGroup
 				JOIN Balls ON Students.NumSt = Balls.NumSt;
 
---3.1 Выберите направления, в которых есть студенты, которые сдали экзамены (сдали все экзамены)
+--3.1 Р’С‹Р±РµСЂРёС‚Рµ РЅР°РїСЂР°РІР»РµРЅРёСЏ, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё СЌРєР·Р°РјРµРЅС‹ (СЃРґР°Р»Рё РІСЃРµ СЌРєР·Р°РјРµРЅС‹)
 SELECT Title FROM Directions JOIN (SELECT NumSt, NumDir, COUNT(Ball) AS Number_of_exams
 	FROM Balls JOIN Uplans ON Balls.IdDisc=Uplans.IdDisc
 	GROUP BY NumSt, NumDir
 		HAVING COUNT(Ball)=(SELECT COUNT(*) FROM Uplans u WHERE
 		Uplans.NumDir=u.NumDir)) AS StudentsAllExams ON Directions.NumDir = StudentsAllExams.NumDir;
 
---3.2 Выберите наименования дисциплин первого семестра
+--3.2 Р’С‹Р±РµСЂРёС‚Рµ РЅР°РёРјРµРЅРѕРІР°РЅРёСЏ РґРёСЃС†РёРїР»РёРЅ РїРµСЂРІРѕРіРѕ СЃРµРјРµСЃС‚СЂР°
 SELECT DISTINCT Name FROM Disciplines JOIN Uplans ON Disciplines.NumDisc = Uplans.NumDisc WHERE Semestr = 1;
 
---3.3 Выберите номера групп, в которых есть студенты, сдавшие хотя бы один экзамен
+--3.3 Р’С‹Р±РµСЂРёС‚Рµ РЅРѕРјРµСЂР° РіСЂСѓРїРї, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, СЃРґР°РІС€РёРµ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ СЌРєР·Р°РјРµРЅ
 SELECT DISTINCT NumGroup FROM Students JOIN Balls ON Students.NumSt = Balls.NumSt;
 
---3.4 Выведите наименования дисциплин с указанием идентификатора студента, если он сдал экзамен
+--3.4 Р’С‹РІРµРґРёС‚Рµ РЅР°РёРјРµРЅРѕРІР°РЅРёСЏ РґРёСЃС†РёРїР»РёРЅ СЃ СѓРєР°Р·Р°РЅРёРµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° СЃС‚СѓРґРµРЅС‚Р°, РµСЃР»Рё РѕРЅ СЃРґР°Р» СЌРєР·Р°РјРµРЅ
 SELECT NumSt, Name FROM
 	Balls
 		JOIN Uplans ON Balls.IdDisc = Uplans.IdDisc 
 			JOIN Disciplines ON Uplans.NumDisc = Disciplines.NumDisc
 ORDER BY NumSt;
 
---3.5 Выберите номера групп, в которых есть свободные места
+--3.5 Р’С‹Р±РµСЂРёС‚Рµ РЅРѕРјРµСЂР° РіСЂСѓРїРї, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃРІРѕР±РѕРґРЅС‹Рµ РјРµСЃС‚Р°
 SELECT DISTINCT Groups.NumGroup FROM
 	Groups
 		JOIN Students ON Groups.NumGroup = Students.NumGroup
 			WHERE Quantity > (SELECT COUNT(Fio) FROM Students s WHERE Students.NumGroup = s.NumGroup);
 
---3.6 Выберите номера групп, в которых есть студенты, сдавшие больше одного экзамена, добавив к ним номера групп, в которых есть студенты, которые ничего не сдали
+--3.6 Р’С‹Р±РµСЂРёС‚Рµ РЅРѕРјРµСЂР° РіСЂСѓРїРї, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, СЃРґР°РІС€РёРµ Р±РѕР»СЊС€Рµ РѕРґРЅРѕРіРѕ СЌРєР·Р°РјРµРЅР°, РґРѕР±Р°РІРёРІ Рє РЅРёРј РЅРѕРјРµСЂР° РіСЂСѓРїРї, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РЅРёС‡РµРіРѕ РЅРµ СЃРґР°Р»Рё
 
--- студенты, сдавшие больше одного экзамена
+-- СЃС‚СѓРґРµРЅС‚С‹, СЃРґР°РІС€РёРµ Р±РѕР»СЊС€Рµ РѕРґРЅРѕРіРѕ СЌРєР·Р°РјРµРЅР°
 SELECT Fio, COUNT(Ball) FROM Students JOIN Balls ON Students.NumSt = Balls.NumSt
 GROUP BY Fio
 	HAVING COUNT(Ball) > 1;
 
--- номера групп, в которых есть студенты, сдавшие больше одного экзамена
+-- РЅРѕРјРµСЂР° РіСЂСѓРїРї, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, СЃРґР°РІС€РёРµ Р±РѕР»СЊС€Рµ РѕРґРЅРѕРіРѕ СЌРєР·Р°РјРµРЅР°
 SELECT DISTINCT NumGroup FROM
 	Students
 		JOIN (SELECT Fio, COUNT(Ball) AS NumberOfExamsPassed FROM Students JOIN Balls ON Students.NumSt = Balls.NumSt
 			  GROUP BY Fio
 				  HAVING COUNT(Ball) > 1) AS st ON Students.Fio = st.Fio;
 
--- студенты, которые ничего не сдали
+-- СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РЅРёС‡РµРіРѕ РЅРµ СЃРґР°Р»Рё
 SELECT NumSt FROM Students
 EXCEPT
 SELECT NumSt FROM Balls
 
--- номера групп, в которых есть студенты, которые ничего не сдали
+-- РЅРѕРјРµСЂР° РіСЂСѓРїРї, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РЅРёС‡РµРіРѕ РЅРµ СЃРґР°Р»Рё
 SELECT DISTINCT NumGroup FROM
 	Students
 		JOIN (SELECT NumSt FROM Students
 			  EXCEPT
 			  SELECT NumSt FROM Balls) AS st ON Students.NumSt = st.NumSt;
 
--- объединение (ИТОГ)
+-- РѕР±СЉРµРґРёРЅРµРЅРёРµ (РРўРћР“)
 (SELECT DISTINCT NumGroup FROM
 	Students
 		JOIN (SELECT Fio, COUNT(Ball) AS NumberOfExamsPassed FROM Students JOIN Balls ON Students.NumSt = Balls.NumSt
@@ -72,23 +72,23 @@ UNION
 			  EXCEPT
 			  SELECT NumSt FROM Balls) AS st ON Students.NumSt = st.NumSt);
 
---3.7 Выберите дисциплины, которые есть и в первом и во втором семестре
+--3.7 Р’С‹Р±РµСЂРёС‚Рµ РґРёСЃС†РёРїР»РёРЅС‹, РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ Рё РІ РїРµСЂРІРѕРј Рё РІРѕ РІС‚РѕСЂРѕРј СЃРµРјРµСЃС‚СЂРµ
 SELECT Name FROM Disciplines JOIN Uplans ON Disciplines.NumDisc = Uplans.NumDisc WHERE Semestr = 1
 INTERSECT
 SELECT Name FROM Disciplines JOIN Uplans ON Disciplines.NumDisc = Uplans.NumDisc WHERE Semestr = 2;
 
---3.8. Придумайте запрос, который использует операцию соединения по неравенству
--- группы в кт есть свободные места
+--3.8. РџСЂРёРґСѓРјР°Р№С‚Рµ Р·Р°РїСЂРѕСЃ, РєРѕС‚РѕСЂС‹Р№ РёСЃРїРѕР»СЊР·СѓРµС‚ РѕРїРµСЂР°С†РёСЋ СЃРѕРµРґРёРЅРµРЅРёСЏ РїРѕ РЅРµСЂР°РІРµРЅСЃС‚РІСѓ
+-- РіСЂСѓРїРїС‹ РІ РєС‚ РµСЃС‚СЊ СЃРІРѕР±РѕРґРЅС‹Рµ РјРµСЃС‚Р°
 SELECT * FROM Groups
 JOIN Directions ON Groups.Quantity < Directions.Quantity;
 
---3.9. Придумайте запрос, который использует операцию внешнего соединения справа, предварительно подготовив тестовые данные.
--- студенты и экзамены, которые они сдавали
+--3.9. РџСЂРёРґСѓРјР°Р№С‚Рµ Р·Р°РїСЂРѕСЃ, РєРѕС‚РѕСЂС‹Р№ РёСЃРїРѕР»СЊР·СѓРµС‚ РѕРїРµСЂР°С†РёСЋ РІРЅРµС€РЅРµРіРѕ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃРїСЂР°РІР°, РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕ РїРѕРґРіРѕС‚РѕРІРёРІ С‚РµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ.
+-- СЃС‚СѓРґРµРЅС‚С‹ Рё СЌРєР·Р°РјРµРЅС‹, РєРѕС‚РѕСЂС‹Рµ РѕРЅРё СЃРґР°РІР°Р»Рё
 SELECT DISTINCT FIO, Ball, DateEx, IdDisc FROM Balls
 RIGHT JOIN Students ON Balls.NumSt = Students.NumSt
 
---3.10 Придумайте запрос с группировкой и соединением нескольких таблиц
--- вывести студентов, которые сдали все экзамены за все семестры(c учетом того, что могли быть пересдачи)
+--3.10 РџСЂРёРґСѓРјР°Р№С‚Рµ Р·Р°РїСЂРѕСЃ СЃ РіСЂСѓРїРїРёСЂРѕРІРєРѕР№ Рё СЃРѕРµРґРёРЅРµРЅРёРµРј РЅРµСЃРєРѕР»СЊРєРёС… С‚Р°Р±Р»РёС†
+-- РІС‹РІРµСЃС‚Рё СЃС‚СѓРґРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё РІСЃРµ СЌРєР·Р°РјРµРЅС‹ Р·Р° РІСЃРµ СЃРµРјРµСЃС‚СЂС‹(c СѓС‡РµС‚РѕРј С‚РѕРіРѕ, С‡С‚Рѕ РјРѕРіР»Рё Р±С‹С‚СЊ РїРµСЂРµСЃРґР°С‡Рё)
 SELECT NumSt, NumDir, COUNT(DISTINCT Balls.IdDisc) AS Number_of_exams
 	FROM Balls JOIN Uplans ON Balls.IdDisc=Uplans.IdDisc
 	GROUP BY NumSt, NumDir
@@ -96,14 +96,14 @@ SELECT NumSt, NumDir, COUNT(DISTINCT Balls.IdDisc) AS Number_of_exams
 		Uplans.NumDir=u.NumDir);
 
 
--- вывести студентов, которые сдали все экзамены 1 семестра
+-- РІС‹РІРµСЃС‚Рё СЃС‚СѓРґРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё РІСЃРµ СЌРєР·Р°РјРµРЅС‹ 1 СЃРµРјРµСЃС‚СЂР°
 SELECT NumSt, NumDir, COUNT(Ball) AS Number_of_exams
 	FROM Balls JOIN Uplans ON Balls.IdDisc=Uplans.IdDisc WHERE Semestr=1
 	GROUP BY NumSt, NumDir
 		HAVING COUNT(Ball)=(SELECT COUNT(*) FROM Uplans u WHERE
 		Uplans.NumDir=u.NumDir and semestr=1);
 
--- вывести студентов, которые сдали все экзамены 1 семестра с использованием NOT EXISTS
+-- РІС‹РІРµСЃС‚Рё СЃС‚СѓРґРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё РІСЃРµ СЌРєР·Р°РјРµРЅС‹ 1 СЃРµРјРµСЃС‚СЂР° СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј NOT EXISTS
 SELECT NumSt, Fio, Groups.NumGroup
 	FROM Students JOIN Groups ON Groups.NumGroup=Students.NumGroup
 	WHERE NOT EXISTS (SELECT * FROM Uplans WHERE Semestr=1 AND Groups.NumDir=Uplans.NumDir
@@ -112,14 +112,14 @@ SELECT NumSt, Fio, Groups.NumGroup
 
 
 
---4.1 Выберите студентов, которые сдали только одну дисциплину(экзамен)
--- студенты, сдавшие один или меньше экзаменов
+--4.1 Р’С‹Р±РµСЂРёС‚Рµ СЃС‚СѓРґРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё С‚РѕР»СЊРєРѕ РѕРґРЅСѓ РґРёСЃС†РёРїР»РёРЅСѓ(СЌРєР·Р°РјРµРЅ)
+-- СЃС‚СѓРґРµРЅС‚С‹, СЃРґР°РІС€РёРµ РѕРґРёРЅ РёР»Рё РјРµРЅСЊС€Рµ СЌРєР·Р°РјРµРЅРѕРІ
 SELECT * FROM Students WHERE NOT EXISTS (
 	SELECT * FROM Balls WHERE Students.NumSt = Balls.NumSt
 	HAVING COUNT(Ball) > 1
 )
 INTERSECT
--- студенты, которые сдали хотя бы один экзамен
+-- СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ СЌРєР·Р°РјРµРЅ
 SELECT * FROM Students WHERE EXISTS (
 	SELECT * FROM Balls WHERE Students.NumSt = Balls.NumSt
 );
@@ -144,12 +144,12 @@ SELECT * FROM Students WHERE EXISTS ( -- ????
 								Uplans.NumDir=u.NumDir)
 );
 
---4.2 Выбрать студентов, которые не сдали ни одного экзамена
+--4.2 Р’С‹Р±СЂР°С‚СЊ СЃС‚СѓРґРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ РЅРµ СЃРґР°Р»Рё РЅРё РѕРґРЅРѕРіРѕ СЌРєР·Р°РјРµРЅР°
 SELECT * FROM Students WHERE NOT EXISTS (
 	SELECT * FROM Balls WHERE Students.NumSt = Balls.NumSt
 );
 
---4.3 Выберите группы, в которых есть студенты, сдавшие все экзамены 1 семестра
+--4.3 Р’С‹Р±РµСЂРёС‚Рµ РіСЂСѓРїРїС‹, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, СЃРґР°РІС€РёРµ РІСЃРµ СЌРєР·Р°РјРµРЅС‹ 1 СЃРµРјРµСЃС‚СЂР°
 SELECT DISTINCT NumGroup FROM
 	Students
 		JOIN (SELECT NumSt
@@ -158,21 +158,21 @@ SELECT DISTINCT NumGroup FROM
 				AND NOT EXISTS (SELECT * FROM Balls WHERE Balls.IdDisc=Uplans.IdDisc AND Students.NumSt=Balls.NumSt)))
 		AS st ON Students.NumSt = st.NumSt;
 
---4.4 Выберите группы, в которых есть студенты, которые не сдали ни одной дисциплины
--- это те кто не сдал вообще ни одного экзамена
+--4.4 Р’С‹Р±РµСЂРёС‚Рµ РіСЂСѓРїРїС‹, РІ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РЅРµ СЃРґР°Р»Рё РЅРё РѕРґРЅРѕР№ РґРёСЃС†РёРїР»РёРЅС‹
+-- СЌС‚Рѕ С‚Рµ РєС‚Рѕ РЅРµ СЃРґР°Р» РІРѕРѕР±С‰Рµ РЅРё РѕРґРЅРѕРіРѕ СЌРєР·Р°РјРµРЅР°
 SELECT DISTINCT Students.NumGroup FROM
 	Students
 		JOIN (SELECT * FROM Students WHERE NOT EXISTS (
 				SELECT * FROM Balls WHERE Students.NumSt = Balls.NumSt
 				))
 		AS st ON Students.NumSt = st.NumSt;
--- к ним прибавляем тех, кто сдал только часть дисциплины(1 семестр)
+-- Рє РЅРёРј РїСЂРёР±Р°РІР»СЏРµРј С‚РµС…, РєС‚Рѕ СЃРґР°Р» С‚РѕР»СЊРєРѕ С‡Р°СЃС‚СЊ РґРёСЃС†РёРїР»РёРЅС‹(1 СЃРµРјРµСЃС‚СЂ)
 
---4.5 Выбрать дисциплины, которые не попали в учебный план направления 231000
+--4.5 Р’С‹Р±СЂР°С‚СЊ РґРёСЃС†РёРїР»РёРЅС‹, РєРѕС‚РѕСЂС‹Рµ РЅРµ РїРѕРїР°Р»Рё РІ СѓС‡РµР±РЅС‹Р№ РїР»Р°РЅ РЅР°РїСЂР°РІР»РµРЅРёСЏ 231000
 SELECT * FROM Disciplines
 WHERE NOT EXISTS (SELECT * FROM Uplans WHERE Uplans.NumDisc = Disciplines.NumDisc AND NumDir = 231000)
 
---4.6 Выбрать дисциплины, которые не сдали все студенты направления 231000
+--4.6 Р’С‹Р±СЂР°С‚СЊ РґРёСЃС†РёРїР»РёРЅС‹, РєРѕС‚РѕСЂС‹Рµ РЅРµ СЃРґР°Р»Рё РІСЃРµ СЃС‚СѓРґРµРЅС‚С‹ РЅР°РїСЂР°РІР»РµРЅРёСЏ 231000
 SELECT * FROM Disciplines
 JOIN Uplans ON Uplans.NumDisc = Disciplines.NumDisc AND Uplans.NumDir = 231000
 WHERE NOT EXISTS (
@@ -181,26 +181,26 @@ WHERE NOT EXISTS (
 	JOIN Groups ON Groups.NumGroup = Students.NumGroup AND Groups.NumDir = 231000
 )
 
---4.7 Выбрать группы, в которых все студенты сдали физику
--- студенты, которые сдавали физику
+--4.7 Р’С‹Р±СЂР°С‚СЊ РіСЂСѓРїРїС‹, РІ РєРѕС‚РѕСЂС‹С… РІСЃРµ СЃС‚СѓРґРµРЅС‚С‹ СЃРґР°Р»Рё С„РёР·РёРєСѓ
+-- СЃС‚СѓРґРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ СЃРґР°РІР°Р»Рё С„РёР·РёРєСѓ
 SELECT * FROM Students, Balls WHERE Students.NumSt = Balls.NumSt AND (Balls.IdDisc = 1 OR Balls.IdDisc = 2 OR Balls.IdDisc = 7 OR Balls.IdDisc = 10)
 
--- Выбрать группы, в которых все студенты сдали физику
+-- Р’С‹Р±СЂР°С‚СЊ РіСЂСѓРїРїС‹, РІ РєРѕС‚РѕСЂС‹С… РІСЃРµ СЃС‚СѓРґРµРЅС‚С‹ СЃРґР°Р»Рё С„РёР·РёРєСѓ
 SELECT NumGroup FROM Students, Balls WHERE Students.NumSt = Balls.NumSt AND Balls.IdDisc IN (SELECT IdDisc FROM Uplans WHERE NumDisc = 1)
 GROUP BY Students.NumGroup
 HAVING COUNT(Fio) = (SELECT Quantity FROM Groups WHERE NumGroup = Students.NumGroup)
 
---4.8 Выбрать группы, в которых все студенты сдали все дисциплины 1 семестра
+--4.8 Р’С‹Р±СЂР°С‚СЊ РіСЂСѓРїРїС‹, РІ РєРѕС‚РѕСЂС‹С… РІСЃРµ СЃС‚СѓРґРµРЅС‚С‹ СЃРґР°Р»Рё РІСЃРµ РґРёСЃС†РёРїР»РёРЅС‹ 1 СЃРµРјРµСЃС‚СЂР°
 SELECT NumGroup FROM Students, Balls WHERE Students.NumSt = Balls.NumSt AND Balls.IdDisc IN (SELECT IdDisc FROM Uplans WHERE Semestr = 1)
 GROUP BY Students.NumGroup
 HAVING COUNT(DISTINCT Fio) = (SELECT Quantity FROM Groups WHERE NumGroup = Students.NumGroup)
 
---4.9 Выбрать студентов, которые сдали все экзамены на хорошо и отлично
+--4.9 Р’С‹Р±СЂР°С‚СЊ СЃС‚СѓРґРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё РІСЃРµ СЌРєР·Р°РјРµРЅС‹ РЅР° С…РѕСЂРѕС€Рѕ Рё РѕС‚Р»РёС‡РЅРѕ
 SELECT * FROM Students
 WHERE NOT EXISTS (SELECT Ball FROM Balls WHERE Students.NumSt = Balls.NumSt AND Ball <= 3) AND
 EXISTS (SELECT Ball FROM Balls WHERE Students.NumSt = Balls.NumSt)
 
---4.10 Выбрать студентов, которые сдали наибольшее количество экзаменов
+--4.10 Р’С‹Р±СЂР°С‚СЊ СЃС‚СѓРґРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ СЃРґР°Р»Рё РЅР°РёР±РѕР»СЊС€РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЌРєР·Р°РјРµРЅРѕРІ
 SELECT FIO FROM Students JOIN Balls ON Students.NumSt = Balls.NumSt
 GROUP BY Students.FIO
 	HAVING COUNT(Ball) = (
